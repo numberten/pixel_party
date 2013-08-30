@@ -4,6 +4,10 @@
 
   Client = (function() {
 
+    Client.prototype.server_address = null;
+
+    Client.prototype.port = null;
+
     Client.prototype.grid = null;
 
     Client.prototype.cellSize = 10;
@@ -18,8 +22,12 @@
 
     Client.prototype.drawingCanvas = null;
 
-    function Client() {
-      this.update = __bind(this.update, this);      this.createCanvas();
+    function Client(server_address, port) {
+      this.server_address = server_address;
+      this.port = port;
+      this.update = __bind(this.update, this);
+      this.removeForm();
+      this.createCanvas();
       this.resizeCanvas();
       this.createDrawingContext();
       this.initialize();
@@ -38,6 +46,10 @@
 
     Client.prototype.createDrawingContext = function() {
       return this.drawingContext = this.canvas.getContext('2d');
+    };
+
+    Client.prototype.removeForm = function() {
+      return document.getElementById("server_info").style.display = "none";
     };
 
     Client.prototype.initialize = function() {
@@ -67,6 +79,8 @@
     };
 
     Client.prototype.update = function() {
+      this.server_address = document.querySelectorAll('input[name="input1"]')[0].value;
+      this.port = document.querySelectorAll('input[name="input2"]')[0].value;
       this.drawGrid();
       return setTimeout(this.update, this.updateLength);
     };
@@ -92,6 +106,9 @@
       x = cell.column * this.cellSize;
       y = cell.row * this.cellSize;
       if (cell.occupancy.length === 0) fillStyle = 'rgb(38, 38, 38)';
+      if (cell.row === parseInt(this.server_address, 10) && cell.column === parseInt(this.port, 10)) {
+        fillStyle = 'rgb(242, 198, 65)';
+      }
       this.drawingContext.strokeStyle = 'rgba(242, 198, 65, 0.1)';
       this.drawingContext.strokeRect(x, y, this.cellSize, this.cellSize);
       this.drawingContext.fillStyle = fillStyle;

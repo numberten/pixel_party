@@ -1,5 +1,6 @@
-
 class Client
+  server_address: null
+  port: null
   grid: null
   cellSize: 10
   numberOfRows: 50
@@ -9,11 +10,14 @@ class Client
   drawingCanvas: null
 
   #Constructor
-  constructor: ->
+  constructor: (@server_address, @port) ->
+    @removeForm()
+
     @createCanvas()
     @resizeCanvas()
     @createDrawingContext()
 
+    #    @joinServer()
     @initialize()
 
     @update()
@@ -29,7 +33,15 @@ class Client
   createDrawingContext: ->
     @drawingContext = @canvas.getContext '2d'
 
+  #Hide 'server_info' form
+  removeForm: ->
+    document.getElementById("server_info").style.display="none"
+
+  #Join the server
+  #joinServer: ->
+
   initialize: ->
+
     @grid = []
 
     for row in [0...@numberOfRows]
@@ -44,6 +56,8 @@ class Client
 
   #Update function
   update: =>
+    @server_address = document.querySelectorAll('input[name="input1"]')[0].value
+    @port = document.querySelectorAll('input[name="input2"]')[0].value
     #{TODO} Read packets from server.
     @drawGrid()
 
@@ -60,6 +74,8 @@ class Client
 
     if cell.occupancy.length is 0
       fillStyle = 'rgb(38, 38, 38)'
+    if cell.row is parseInt(@server_address, 10) and cell.column is parseInt(@port, 10)
+      fillStyle = 'rgb(242, 198, 65)'
     #else
       #Fill based on occupancy list
     
@@ -68,6 +84,5 @@ class Client
 
     @drawingContext.fillStyle = fillStyle
     @drawingContext.fillRect x, y, @cellSize, @cellSize
-
 
 window.Client = Client

@@ -15,11 +15,26 @@
       margin: 50px auto 0 auto;
       display: block;
     }
+
+    form {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      text-align: center;        
+      width:546px;
+      height:265px;
+      margin-left: -273px;
+      margin-top: -132px;
+    }
   </style>
 </head>
 <body>
-  <script type="text/javascript">
-    new Client();
-  </script>
+  <form action="" method="GET" id="server_info">
+    <label>Server Address</label>
+    <input type="text" name="input1" value="127.0.0.1">
+    <label>Port</label>
+    <input type="text" name="input2" value="420">
+    <input type="button" name="button" value="Connect" onClick="new Client(input1, input2);">
+  </form> 
 </body>
 </html>
