@@ -1,12 +1,14 @@
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include "game-structs.h"
+#include "message-processing.h"
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-  int sockfd, n;
-  struct sockaddr_in servaddr, cliaddr;
+  int sockfd, n, i = 0, max_clients = 10;
+  struct sockaddr_in servaddr, client_address;
   socklen_t len;
   char mesg[1000];
+  struct player_struct players[max_clients];
 
   sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -17,9 +19,10 @@ int main(int argc, char **argv) {
   bind(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr));
 
   while (1) {
-    len = sizeof(cliaddr);
-    n = recvfrom(sockfd, mesg, 1000, 0, (struct sockaddr *) &cliaddr, &len);
-    sendto(sockfd, mesg, n, 0, (struct sockaddr *) &cliaddr, sizeof(cliaddr));
+    len = sizeof(client_address);
+    n = recvfrom(sockfd, mesg, 1000, 0, (struct sockaddr *) &client_address, &len);
+    process_recvfrom(players, mesg, &client_address, &len);
+    sendto(sockfd, mesg, n, 0, (struct sockaddr *) &client_address, sizeof(client_address));
     printf("-------------------------------------------------------\n");
     mesg[n] = 0;
     printf("Received the following:\n%s", mesg);
