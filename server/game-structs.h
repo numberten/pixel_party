@@ -11,10 +11,10 @@ struct pixel_struct {
   unsigned short y;
 };
 
-struct player_struct {
+typedef struct player_struct {
   struct pixel_struct pixel;
   struct sockaddr_in clientaddr;
   socklen_t clientaddr_len;
-};
+} player_struct;
 
 #endif /* GAMESTRUCTS_H */

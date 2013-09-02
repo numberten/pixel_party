@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
   struct sockaddr_in servaddr, client_address;
   socklen_t len;
   char mesg[1000];
-  struct player_struct players[max_clients];
+  player_struct players[max_clients];
 
   sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 

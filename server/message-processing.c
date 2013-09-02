@@ -8,12 +8,12 @@ int move_request(char*);
 int pong_response(char*);
 
 //Protoypes for handling state after a valid message has been received.
-void add_player(struct player_struct[], int*, int*, struct sockaddr_in*, socklen_t*);
-int check_address(struct player_struct[], int*, struct sockaddr_in*, socklen_t*);
-void move_player(struct player_struct*, char);
-void update_timeout(struct player_struct*);
+void add_player(player_struct[], int*, int*, struct sockaddr_in*, socklen_t*);
+int check_address(player_struct[], int*, struct sockaddr_in*, socklen_t*);
+void move_player(player_struct*, char);
+void update_timeout(player_struct*);
 
-int process_recvfrom( struct player_struct players[],
+int process_recvfrom( player_struct players[],
                       int *nplayers,
                       int *max_players,
                       char message[], 
@@ -58,7 +58,7 @@ int client_connecting(char message[]) {
   return 0 == strncmp("HELLO", message, 5);
 }
 
-void add_player(struct player_struct players[], int *nplayers, int *max_players, struct sockaddr_in *client_addr, socklen_t *client_addr_len) {
+void add_player(player_struct players[], int *nplayers, int *max_players, struct sockaddr_in *client_addr, socklen_t *client_addr_len) {
   if (*nplayers == *max_players - 1)
     //Make room for new player. (Dynamic array? or linked list)
     printf("Making room for new player.\n"); 
@@ -67,15 +67,15 @@ void add_player(struct player_struct players[], int *nplayers, int *max_players,
   (*nplayers)++;
 }
 
-int check_address(struct player_struct players[], int *nplayers, struct sockaddr_in *client_addr, socklen_t *client_addr_len) {
+int check_address(player_struct players[], int *nplayers, struct sockaddr_in *client_addr, socklen_t *client_addr_len) {
   printf("checking address!\n");
   return -1;
 }
 
-void move_player(struct player_struct *player, char direction) {
+void move_player(player_struct *player, char direction) {
   printf("Direction: %c\n", direction);
 }
 
-void update_timeout(struct player_struct *player) {
+void update_timeout(player_struct *player) {
   printf("Updating the time yo.\n");
 }
