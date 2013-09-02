@@ -1,14 +1,14 @@
 #include <sys/socket.h>
-#include "game-structs.h"
+#include "linked_list.h"
 #include "message-processing.h"
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-  int sockfd, n, i = -1, max_clients = 10;
+  int sockfd, n;
   struct sockaddr_in servaddr, client_address;
   socklen_t len;
   char mesg[1000];
-  player_struct players[max_clients];
+  list **players;
 
   sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -21,8 +21,7 @@ int main(int argc, char **argv) {
   while (1) {
     len = sizeof(client_address);
     n = recvfrom(sockfd, mesg, 1000, 0, (struct sockaddr *) &client_address, &len);
-    printf("i: %d\n", i);
-    process_recvfrom(players, &i, &max_clients, mesg, &client_address, &len);
+    process_recvfrom(players, mesg, &client_address, &len);
     sendto(sockfd, mesg, n, 0, (struct sockaddr *) &client_address, sizeof(client_address));
     printf("-------------------------------------------------------\n");
     mesg[n] = 0;
@@ -32,7 +31,6 @@ int main(int argc, char **argv) {
 } 
 
 //TODO: Add client tracking for multiple clients.
-//    - Store in linked list or dynamic array.
 //    - Add message-appropriate replies.
 //    - Add board grid.
 //    - Add timeout handling.

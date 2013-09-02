@@ -1,3 +1,6 @@
+#ifndef LINKEDLIST_H
+#define LINKEDLIST_H
+
 #include "game-structs.h"
 
 //New type 'list' for newly defined linked list struct.
@@ -12,5 +15,4 @@ void insert_list(list**, player_struct);
 list *predecessor_list(list*, player_struct);
 list *search_list(list*, player_struct);
 
-
-  
+#endif /* LINKEDLIST_H */
