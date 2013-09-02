@@ -2,13 +2,15 @@
 #include "linked_list.h"
 #include "message-processing.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv) {
   int sockfd, n;
   struct sockaddr_in servaddr, client_address;
   socklen_t len;
-  char mesg[1000];
-  list **players;
+  char mesg[10];
+  list *end = NULL;
+  list **players = &end;
 
   sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -20,7 +22,7 @@ int main(int argc, char **argv) {
 
   while (1) {
     len = sizeof(client_address);
-    n = recvfrom(sockfd, mesg, 1000, 0, (struct sockaddr *) &client_address, &len);
+    n = recvfrom(sockfd, mesg, 10, 0, (struct sockaddr *) &client_address, &len);
     process_recvfrom(players, mesg, &client_address, &len);
     sendto(sockfd, mesg, n, 0, (struct sockaddr *) &client_address, sizeof(client_address));
     printf("-------------------------------------------------------\n");
@@ -30,7 +32,7 @@ int main(int argc, char **argv) {
   }
 } 
 
-//TODO: Add client tracking for multiple clients.
+//TODO: 
 //    - Add message-appropriate replies.
 //    - Add board grid.
 //    - Add timeout handling.

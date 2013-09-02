@@ -17,4 +17,7 @@ typedef struct player_struct {
   socklen_t clientaddr_len;
 } player_struct;
 
+void free_pixel(struct pixel_struct*);
+void free_player(player_struct*);
+
 #endif /* GAMESTRUCTS_H */
