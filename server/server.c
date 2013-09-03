@@ -1,8 +1,9 @@
-#include <sys/socket.h>
+#include "colors.h"
 #include "linked_list.h"
 #include "message-processing.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/socket.h>
 
 int main(int argc, char **argv) {
   int sockfd, n;
@@ -11,6 +12,8 @@ int main(int argc, char **argv) {
   char mesg[10];
   list *end = NULL;
   list **players = &end;
+
+  initialize_hue();
 
   sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
