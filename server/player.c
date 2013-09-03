@@ -15,6 +15,7 @@ void add_player(list **players, struct sockaddr_in *client_address, socklen_t *c
   generate_pos(&(new_pixel->x), &(new_pixel->y)); 
   generate_rgb(&(new_pixel->red), &(new_pixel->green), &(new_pixel->blue));
   printf("\tRed: %.3hu\n\tGreen: %.3hu\n\tBlue: %.3hu\n", new_pixel->red, new_pixel->green, new_pixel->blue);
+  printf("\n\tX: %.2hu\n\tY: %.2hu\n", new_pixel->x, new_pixel->y);
 
   new_player = malloc(sizeof(player_struct));
   new_player->pixel = *new_pixel;
