@@ -14,12 +14,12 @@ void delete_list(list **l, player_struct x) {
       *l = p->next;
     else
       pred->next = p->next;
-    free_player(&(p->player));
+    free_player(p->player);
     free(p);
   }
 }
 
-void insert_list(list **l, player_struct x) {
+void insert_list(list **l, player_struct *x) {
   list *p;
 
   p = malloc(sizeof(list));
@@ -31,7 +31,7 @@ void insert_list(list **l, player_struct x) {
 list *predecessor_list(list *l, player_struct x) {
   if ((l == NULL) || (l->next == NULL))
     return NULL;
-  if (&((l->next)->player) == &x)
+  if ((l->next)->player == &x)
     return l;
   else
     return predecessor_list(l->next, x);
@@ -40,7 +40,7 @@ list *predecessor_list(list *l, player_struct x) {
 list *search_list(list *l, player_struct x) {
   if (l == NULL)
     return NULL;
-  if (&(l->player) == &x)
+  if (l->player == &x)
     return l;
   return search_list(l->next, x);
 }

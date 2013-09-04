@@ -5,7 +5,6 @@
 
 #define FOO(x) (floor(255 * (x + m)))
 
-
 /*  Functions for randomly picking the rgb value of a new pixel.
  *  HSV with a static saturation and value for bright colors.
  *  Hue picked using golden ratio to ensure variation.
@@ -57,7 +56,7 @@ void hsv_to_rgb(U_SHORT *r, U_SHORT *g, U_SHORT *b, float h, float s, float v) {
 void generate_rgb(U_SHORT *r, U_SHORT *g, U_SHORT *b) {
   float s = 1, v = 1;
   const float golden_ratio = 0.618033988749895;
-  
+
   hue += golden_ratio;
   hue = fmod(hue, 1);
   hsv_to_rgb(r, g, b, hue, s, v);
