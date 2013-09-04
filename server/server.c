@@ -37,5 +37,4 @@ int main(int argc, char **argv) {
 
 //TODO: 
 //    - Add message-appropriate replies.
-//    - Add board grid.
 //    - Add timeout handling.

@@ -32,8 +32,6 @@ void move_player(player_struct *player, char direction) {
   struct pixel_struct *current_pixel;
   current_pixel = player->pixel;
 
-  printf("Found the old client, and moving his pixel now!\n");
-
   printf("\tOld X: %.2hu\n\tOld Y: %.2hu\n", *(current_pixel->x), *(current_pixel->y));
   if (direction == 'N' && *current_pixel->y > 0) {
     *current_pixel->y -= 1;
@@ -60,8 +58,7 @@ void move_player(player_struct *player, char direction) {
 
 void update_timeout(player_struct *player) {
   printf("update_timeout called!\n");
-
-  //printf("printing the red value in this player: %.3hu\n", *(player->pixel).red);
+  player->last_pong = time(NULL);
 }
 
 void generate_pos(U_SHORT *x_ptr, U_SHORT *y_ptr) {

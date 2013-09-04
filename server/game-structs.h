@@ -2,6 +2,7 @@
 #define GAMESTRUCTS_H
 
 #include <netinet/in.h>
+#include <time.h>
 
 struct pixel_struct {
   unsigned short *red;
@@ -15,6 +16,7 @@ typedef struct player_struct {
   struct pixel_struct *pixel;
   struct sockaddr_in clientaddr;
   socklen_t clientaddr_len;
+  time_t last_pong;
 } player_struct;
 
 void free_pixel(struct pixel_struct*);
