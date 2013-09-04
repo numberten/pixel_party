@@ -9,7 +9,7 @@ int move_request(char*);
 int pong_response(char*);
 
 //Check if the current request came from a listed client.
-int check_address(list*, struct sockaddr_in*, socklen_t*, player_struct*);
+int check_address(list*, struct sockaddr_in*, socklen_t*, player_struct**);
 
 int process_recvfrom( list **players,
                       char message[], 
@@ -20,19 +20,19 @@ int process_recvfrom( list **players,
 
   if (pong_response(message)) {
     printf("Caught a pong!\n");
-    if (check_address(*players, client_addr_ptr, len_ptr, client))
+    if (check_address(*players, client_addr_ptr, len_ptr, &client))
       update_timeout(client);
     return 1;
   }
   if (move_request(message)) {
     printf("Caught a move request!\n");
-    if (check_address(*players, client_addr_ptr, len_ptr, client))
-      move_player(players, message[4]);
+    if (check_address(*players, client_addr_ptr, len_ptr, &client))
+      move_player(client, message[4]);
     return 1;
   }
   if (client_connecting(message)) {
     printf("Caught a connection request!\n");
-    if (!check_address(*players, client_addr_ptr, len_ptr, client))
+    if (!check_address(*players, client_addr_ptr, len_ptr, &client))
       add_player(players, client_addr_ptr, len_ptr);
     return 1;
   }
@@ -55,13 +55,15 @@ int client_connecting(char message[]) {
   return 0 == strncmp("HELLO", message, 5);
 }
 
-int check_address(list *players, struct sockaddr_in *client_addr, socklen_t *client_addr_len, player_struct *player) {
+//Checks if the request came from a current player.
+//Sets *player to that player, if true.
+int check_address(list *players, struct sockaddr_in *client_addr, socklen_t *client_addr_len, player_struct **player) {
   if (players == NULL)
     return 0;
-  if (!strcmp(inet_ntoa((players->player).clientaddr.sin_addr), inet_ntoa(client_addr->sin_addr)) &&
-      ntohs((players->player).clientaddr.sin_port) == ntohs(client_addr->sin_port) &&
-      (players->player).clientaddr_len == *client_addr_len) {
-    player = &(players->player);
+  if (!strcmp(inet_ntoa((players->player)->clientaddr.sin_addr), inet_ntoa(client_addr->sin_addr)) &&
+      ntohs((players->player)->clientaddr.sin_port) == ntohs(client_addr->sin_port) &&
+      (players->player)->clientaddr_len == *client_addr_len) {
+    *player = players->player;
     return 1;
   }
   return check_address(players->next, client_addr, client_addr_len, player);
