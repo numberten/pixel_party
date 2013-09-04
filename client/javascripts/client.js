@@ -106,7 +106,7 @@
       x = cell.column * this.cellSize;
       y = cell.row * this.cellSize;
       if (cell.occupancy.length === 0) fillStyle = 'rgb(38, 38, 38)';
-      if (cell.row === parseInt(this.server_address, 10) && cell.column === parseInt(this.port, 10)) {
+      if (cell.row === parseInt(this.port, 10) && cell.column === parseInt(this.server_address, 10)) {
         fillStyle = 'rgb(242, 198, 65)';
       }
       this.drawingContext.strokeStyle = 'rgba(242, 198, 65, 0.1)';

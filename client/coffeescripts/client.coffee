@@ -74,7 +74,7 @@ class Client
 
     if cell.occupancy.length is 0
       fillStyle = 'rgb(38, 38, 38)'
-    if cell.row is parseInt(@server_address, 10) and cell.column is parseInt(@port, 10)
+    if cell.row is parseInt(@port, 10) and cell.column is parseInt(@server_address, 10)
       fillStyle = 'rgb(242, 198, 65)'
     #else
       #Fill based on occupancy list
