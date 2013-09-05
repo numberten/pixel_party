@@ -5,6 +5,7 @@
 #include "server.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include "timeout.h"
 
@@ -14,7 +15,7 @@ int main(int argc, char **argv) {
   int sockfd, n;
   struct sockaddr_in servaddr, client_address;
   socklen_t len;
-  char mesg[10], reply[10];
+  char mesg[10], reply[1000];
   list *end = NULL;
   client_list = &end;
 
@@ -36,8 +37,9 @@ int main(int argc, char **argv) {
   while (1) {
     len = sizeof(client_address);
     n = recvfrom(sockfd, mesg, 10, 0, (struct sockaddr *) &client_address, &len);
-    process_recvfrom(client_list, mesg, &client_address, &len, reply);
-    sendto(sockfd, reply, 40, 0, (struct sockaddr *) &client_address, sizeof(client_address));
+    process_recvfrom(client_list, mesg, &client_address, &len, &sockfd, reply);
+    printf("From main() reply: %s\n", reply);
+    sendto(sockfd, reply, strlen(reply), 0, (struct sockaddr *) &client_address, sizeof(client_address));
     printf("-------------------------------------------------------\n");
     mesg[n] = 0;
     printf("Received the following:\n%s", mesg);
@@ -46,4 +48,4 @@ int main(int argc, char **argv) {
 } 
 
 //TODO: 
-//    - Add message-appropriate replies.
+//  - Add auto pings!

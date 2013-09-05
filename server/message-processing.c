@@ -18,18 +18,18 @@ int process_recvfrom( list **players,
                       char message[], 
                       struct sockaddr_in *client_addr_ptr, 
                       socklen_t *len_ptr,
+                      int *socket_ptr,
                       char reply[]) {
 
   player_struct *client;
-
-  printf("reply: %s\n", reply);
 
   if (pong_response(message)) {
     printf("Caught a pong!\n");
     if (check_address(*players, client_addr_ptr, len_ptr, &client)) {
       update_timeout(client);
       pong_message(reply);
-    }
+    } else
+        error_message(reply);
     return 1;
   }
   if (move_request(message)) {
@@ -37,17 +37,21 @@ int process_recvfrom( list **players,
     if (check_address(*players, client_addr_ptr, len_ptr, &client)) {
       move_player(client, message[4]);
       move_message(message[4], reply);
-    }
+      grid_message(*players);
+      printf("post grid_message\n");
+    } else
+        error_message(reply);
     return 1;
   }
   if (client_connecting(message)) {
     printf("Caught a connection request!\n");
     if (!check_address(*players, client_addr_ptr, len_ptr, &client)) {
-      add_player(players, client_addr_ptr, len_ptr);
+      add_player(players, client_addr_ptr, len_ptr, socket_ptr);
       client = (*players)->player;
-      printf("reply: %p\n", reply);
       welcome_message(client, reply);
-    }
+      grid_message(*players);
+    } else
+        error_message(reply);
     return 1;
   }
   printf("[Error]: Unresolved udp message from %s:%d.\n", inet_ntoa(client_addr_ptr->sin_addr), ntohs(client_addr_ptr->sin_port));

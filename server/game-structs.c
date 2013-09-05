@@ -17,6 +17,7 @@ void free_player(player_struct *player) {
   free(player->clientaddr);
   free(player->clientaddr_len);
   free(player->last_pong);
+  free(player->socket);
   free(player);
 }
 

@@ -6,7 +6,7 @@
 void generate_pos(U_SHORT*, U_SHORT*);
 
 //Adds a new player_struct to **players. Mallocing the space needed for game-struct attributes.
-void add_player(list **players, struct sockaddr_in *client_address, socklen_t *client_address_len) {
+void add_player(list **players, struct sockaddr_in *client_address, socklen_t *client_address_len, int *client_socket) {
   struct pixel_struct *new_pixel;
   player_struct *new_player;
 
@@ -29,6 +29,9 @@ void add_player(list **players, struct sockaddr_in *client_address, socklen_t *c
   *(new_player->clientaddr_len) = *client_address_len;
   new_player->last_pong = malloc(sizeof(time_t));
   *(new_player->last_pong) = time(NULL);
+  new_player->socket = malloc(sizeof(int));
+  *(new_player->socket) = *client_socket;
+  printf("Socket: %d\n", *new_player->socket);
 
   insert_list(players, new_player);
 }

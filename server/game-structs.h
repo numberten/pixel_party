@@ -17,6 +17,7 @@ typedef struct player_struct {
   struct sockaddr_in *clientaddr;
   socklen_t *clientaddr_len;
   time_t *last_pong;
+  int *socket;
 } player_struct;
 
 void free_pixel(struct pixel_struct*);
