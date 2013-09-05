@@ -1,6 +1,7 @@
 #include <arpa/inet.h>
 #include "message-processing.h"
 #include "player.h"
+#include "reply-processing.h"
 #include <stdio.h>
 
 //Prototypes for catching valid udp messages.
@@ -11,32 +12,46 @@ int pong_response(char*);
 //Check if the current request came from a listed client.
 int check_address(list*, struct sockaddr_in*, socklen_t*, player_struct**);
 
+//Checks input for validity.
+//Updates clients and sets return message accordingly.
 int process_recvfrom( list **players,
                       char message[], 
                       struct sockaddr_in *client_addr_ptr, 
-                      socklen_t *len_ptr) {
+                      socklen_t *len_ptr,
+                      char reply[]) {
 
   player_struct *client;
 
+  printf("reply: %s\n", reply);
+
   if (pong_response(message)) {
     printf("Caught a pong!\n");
-    if (check_address(*players, client_addr_ptr, len_ptr, &client))
+    if (check_address(*players, client_addr_ptr, len_ptr, &client)) {
       update_timeout(client);
+      pong_message(reply);
+    }
     return 1;
   }
   if (move_request(message)) {
     printf("Caught a move request!\n");
-    if (check_address(*players, client_addr_ptr, len_ptr, &client))
+    if (check_address(*players, client_addr_ptr, len_ptr, &client)) {
       move_player(client, message[4]);
+      move_message(message[4], reply);
+    }
     return 1;
   }
   if (client_connecting(message)) {
     printf("Caught a connection request!\n");
-    if (!check_address(*players, client_addr_ptr, len_ptr, &client))
+    if (!check_address(*players, client_addr_ptr, len_ptr, &client)) {
       add_player(players, client_addr_ptr, len_ptr);
+      client = (*players)->player;
+      printf("reply: %p\n", reply);
+      welcome_message(client, reply);
+    }
     return 1;
   }
   printf("[Error]: Unresolved udp message from %s:%d.\n", inet_ntoa(client_addr_ptr->sin_addr), ntohs(client_addr_ptr->sin_port));
+  error_message(reply);
   return 0;
 }
 

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 //Delete, insert, search, predecessor functions for linked list data structure.
-
 void delete_list(list **l, player_struct *x) {
   list *p, *pred; 
   list *search_list(), *predecessor_list();
