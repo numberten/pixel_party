@@ -5,6 +5,7 @@
 
 void generate_pos(U_SHORT*, U_SHORT*);
 
+//Adds a new player_struct to **players. Mallocing the space needed for game-struct attributes.
 void add_player(list **players, struct sockaddr_in *client_address, socklen_t *client_address_len) {
   struct pixel_struct *new_pixel;
   player_struct *new_player;
