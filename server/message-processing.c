@@ -60,9 +60,9 @@ int client_connecting(char message[]) {
 int check_address(list *players, struct sockaddr_in *client_addr, socklen_t *client_addr_len, player_struct **player) {
   if (players == NULL)
     return 0;
-  if (!strcmp(inet_ntoa((players->player)->clientaddr.sin_addr), inet_ntoa(client_addr->sin_addr)) &&
-      ntohs((players->player)->clientaddr.sin_port) == ntohs(client_addr->sin_port) &&
-      (players->player)->clientaddr_len == *client_addr_len) {
+  if (!strcmp(inet_ntoa(((players->player)->clientaddr)->sin_addr), inet_ntoa(client_addr->sin_addr)) &&
+      ntohs(((players->player)->clientaddr)->sin_port) == ntohs(client_addr->sin_port) &&
+      *((players->player)->clientaddr_len) == *client_addr_len) {
     *player = players->player;
     return 1;
   }

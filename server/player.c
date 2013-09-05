@@ -22,8 +22,12 @@ void add_player(list **players, struct sockaddr_in *client_address, socklen_t *c
 
   new_player = malloc(sizeof(player_struct));
   new_player->pixel = new_pixel;
-  new_player->clientaddr = *client_address;
-  new_player->clientaddr_len = *client_address_len;
+  new_player->clientaddr = malloc(sizeof(struct sockaddr_in));
+  *(new_player->clientaddr) = *client_address;
+  new_player->clientaddr_len = malloc(sizeof(socklen_t));
+  *(new_player->clientaddr_len) = *client_address_len;
+  new_player->last_pong = malloc(sizeof(time_t));
+  *(new_player->last_pong) = time(NULL);
 
   insert_list(players, new_player);
 }
@@ -58,7 +62,7 @@ void move_player(player_struct *player, char direction) {
 
 void update_timeout(player_struct *player) {
   printf("update_timeout called!\n");
-  player->last_pong = time(NULL);
+  *(player->last_pong) = time(NULL);
 }
 
 void generate_pos(U_SHORT *x_ptr, U_SHORT *y_ptr) {
