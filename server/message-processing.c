@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include "messaging.h"
 #include "message-processing.h"
 #include "player.h"
 #include "reply-processing.h"
@@ -9,7 +10,6 @@ int client_connecting(char*);
 int move_request(char*);
 int pong_response(char*);
 
-//Check if the current request came from a listed client.
 int check_address(list*, struct sockaddr_in*, socklen_t*, player_struct**);
 
 //Checks input for validity.
@@ -37,7 +37,7 @@ int process_recvfrom( list **players,
     if (check_address(*players, client_addr_ptr, len_ptr, &client)) {
       move_player(client, message[4]);
       move_message(message[4], reply);
-      grid_message(*players);
+      send_updates();
       printf("post grid_message\n");
     } else
         error_message(reply);
@@ -49,7 +49,7 @@ int process_recvfrom( list **players,
       add_player(players, client_addr_ptr, len_ptr, socket_ptr);
       client = (*players)->player;
       welcome_message(client, reply);
-      grid_message(*players);
+      send_updates();
     } else
         error_message(reply);
     return 1;

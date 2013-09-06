@@ -2,8 +2,11 @@
 #include <string.h>
 #include "reply-processing.h"
 
-//All functions set str_ptr to the proper response.
-//str_ptr will be used in main()'s sendto call.
+/* Functions for setting server to client messages.
+ * All functions set str_ptr to the proper response.
+ * str_ptr gets used as the char* in main()'s sendto.
+ */
+
 void error_message(char *str_ptr) {
   snprintf(str_ptr, 40, "ERROR\n");
 }
@@ -41,32 +44,3 @@ void welcome_message(player_struct *player, char *str_ptr) {
   snprintf(str_ptr, 40, "WELCOME: x:%hu,y:%hu,r:%hu,g:%hu,b:%hu\n", x, y, r, g, b);
   return ;
 }
-
-//Generate the grid message with pixel data of all connected clients.
-void grid_message(list *players) {
-  unsigned short x, y, r, g, b;
-  list *p = players;
-  char temp[1000];
-  char str_ptr[1000];
-
-  strcpy(temp, "");
-  while (p != NULL) {
-    x = *p->player->pixel->x;
-    y = *p->player->pixel->y;
-    r = *p->player->pixel->red;
-    g = *p->player->pixel->green;
-    b = *p->player->pixel->blue;
-    snprintf(str_ptr, 40, "%hu,%hu,%hu,%hu,%hu$\n", x, y, r, g, b);
-    strcat(temp, str_ptr);
-    p = p->next;
-  }
-  snprintf(str_ptr, 1000, "%s", temp);
-  p = players;
-
-  //sendto the grid message to all clients.
-  while (p != NULL) {
-    sendto(*p->player->socket, str_ptr, strlen(str_ptr), 0, (struct sockaddr *) p->player->clientaddr, sizeof(*p->player->clientaddr));
-    p = p->next;
-  }
-}
-

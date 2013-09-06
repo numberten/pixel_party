@@ -1,4 +1,3 @@
-#include "linked_list.h"
 #include "server.h"
 
 //Callback for main()'s pthread

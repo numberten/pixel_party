@@ -1,5 +1,6 @@
 #include "colors.h"
 #include "linked_list.h"
+#include "messaging.h"
 #include "message-processing.h"
 #include <pthread.h>
 #include "server.h"
@@ -20,6 +21,7 @@ int main(int argc, char **argv) {
   client_list = &end;
 
   pthread_t timeout_thread;
+  pthread_t ping_client_thread;
 
   initialize_hue();
 
@@ -33,6 +35,8 @@ int main(int argc, char **argv) {
 
   //Run thread to check client timeouts.
   pthread_create(&timeout_thread, NULL, loop_check_timeouts, NULL);
+  //Send pings to clients.
+  pthread_create(&ping_client_thread, NULL, loop_ping_clients, NULL);
 
   while (1) {
     len = sizeof(client_address);
@@ -45,7 +49,4 @@ int main(int argc, char **argv) {
     printf("Received the following:\n%s", mesg);
     printf("-------------------------------------------------------\n");
   }
-} 
-
-//TODO: 
-//  - Add auto pings!
+}

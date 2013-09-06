@@ -1,6 +1,10 @@
 #include "timeout.h"
 #include <stdio.h>
 
+/* Functions for dealing with timeouts. 
+ * Used in main()'s timeout pthread.
+ */
+
 //Checks "server.h"'s list **client_list for players that have timedout.
 void check_timeouts(list **original_players, list *players) {
   time_t current_time;
