@@ -17,8 +17,8 @@ class Client
     @resizeCanvas()
     @createDrawingContext()
 
-    #    @joinServer()
     @initialize()
+    @joinServer()
 
     @update()
 
@@ -37,11 +37,36 @@ class Client
   removeForm: ->
     document.getElementById("server_info").style.display="none"
 
+  #Can't run node from browser. Need to add chrome sockets.
+  ###
   #Join the server
-  #joinServer: ->
+  joinServer: ->
+    dgram   = require 'dgram'
+    client  = dgram.createSocket 'udp4'
+
+    stdin = process.openStdin();
+    stdin.setEncoding 'utf8'
+
+    message = new Buffer "HELLO";
+    client.send message, 0, message.length, parseInt(@port, 10), @server_address;
+    console.log "This should go to logs."
+    console.log message
+    client.on 'message', (message) ->
+      m = message.toString()
+      r = m.match(/\d+/g)
+      process.stdout.write m
+      if (r isnt null)
+        process.stdout.write r[0]
+        process.stdout.write r[1]
+        process.stdout.write r[2]
+        process.stdout.write r[3]
+        process.stdout.write r[4]
+        process.stdout.write "\n"
+    ###
 
   initialize: ->
-
+    @server_address = document.querySelectorAll('input[name="input1"]')[0].value
+    @port = document.querySelectorAll('input[name="input2"]')[0].value
     @grid = []
 
     for row in [0...@numberOfRows]
@@ -56,8 +81,6 @@ class Client
 
   #Update function
   update: =>
-    @server_address = document.querySelectorAll('input[name="input1"]')[0].value
-    @port = document.querySelectorAll('input[name="input2"]')[0].value
     #{TODO} Read packets from server.
     @drawGrid()
 

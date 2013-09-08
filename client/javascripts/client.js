@@ -31,6 +31,7 @@
       this.resizeCanvas();
       this.createDrawingContext();
       this.initialize();
+      this.joinServer();
       this.update();
     }
 
@@ -52,8 +53,36 @@
       return document.getElementById("server_info").style.display = "none";
     };
 
+    /*
+      #Join the server
+      joinServer: ->
+        dgram   = require 'dgram'
+        client  = dgram.createSocket 'udp4'
+    
+        stdin = process.openStdin();
+        stdin.setEncoding 'utf8'
+    
+        message = new Buffer "HELLO";
+        client.send message, 0, message.length, parseInt(@port, 10), @server_address;
+        console.log "This should go to logs."
+        console.log message
+        client.on 'message', (message) ->
+          m = message.toString()
+          r = m.match(/\d+/g)
+          process.stdout.write m
+          if (r isnt null)
+            process.stdout.write r[0]
+            process.stdout.write r[1]
+            process.stdout.write r[2]
+            process.stdout.write r[3]
+            process.stdout.write r[4]
+            process.stdout.write "\n"
+    */
+
     Client.prototype.initialize = function() {
       var column, row, _ref, _results;
+      this.server_address = document.querySelectorAll('input[name="input1"]')[0].value;
+      this.port = document.querySelectorAll('input[name="input2"]')[0].value;
       this.grid = [];
       _results = [];
       for (row = 0, _ref = this.numberOfRows; 0 <= _ref ? row < _ref : row > _ref; 0 <= _ref ? row++ : row--) {
@@ -79,8 +108,6 @@
     };
 
     Client.prototype.update = function() {
-      this.server_address = document.querySelectorAll('input[name="input1"]')[0].value;
-      this.port = document.querySelectorAll('input[name="input2"]')[0].value;
       this.drawGrid();
       return setTimeout(this.update, this.updateLength);
     };
