@@ -1,5 +1,6 @@
 class Client
-  server_address: null
+  socket_info: null
+  server_address: "test"
   port: null
   grid: null
   cellSize: 10
@@ -10,7 +11,7 @@ class Client
   drawingCanvas: null
 
   #Constructor
-  constructor: (@server_address, @port) ->
+  constructor: ->
     @removeForm()
 
     @createCanvas()
@@ -37,36 +38,27 @@ class Client
   removeForm: ->
     document.getElementById("server_info").style.display="none"
 
-  #Can't run node from browser. Need to add chrome sockets.
-  ###
-  #Join the server
   joinServer: ->
-    dgram   = require 'dgram'
-    client  = dgram.createSocket 'udp4'
+    socket = chrome.socket
+    socket.create 'udp', {}, (socketInfo) =>
+      @socket_info = socketInfo
+      socket.connect @socket_info.socketId, @server_address, @port, (connectResult) =>
 
-    stdin = process.openStdin();
-    stdin.setEncoding 'utf8'
+        # str2ab: Takes a string and turns it into an arraybuffer.
+        #   ArrayBuffer takes the number of bytes to allocate.
+        #   ArrayBuffers must be accessed via a DataView. In this case a Uint8Array.
 
-    message = new Buffer "HELLO";
-    client.send message, 0, message.length, parseInt(@port, 10), @server_address;
-    console.log "This should go to logs."
-    console.log message
-    client.on 'message', (message) ->
-      m = message.toString()
-      r = m.match(/\d+/g)
-      process.stdout.write m
-      if (r isnt null)
-        process.stdout.write r[0]
-        process.stdout.write r[1]
-        process.stdout.write r[2]
-        process.stdout.write r[3]
-        process.stdout.write r[4]
-        process.stdout.write "\n"
-    ###
+        str2ab = (str) ->
+          buf = new ArrayBuffer(str.length)
+          bufView = new Uint8Array(buf)
+          bufView[i] = str.charCodeAt(i) for i in [0...str.length]
+          buf
+        socket.write @socket_info.socketId, str2ab("HELLO\n"), (writeInfo) ->
+          console.debug "writeinfo", writeInfo
 
   initialize: ->
-    @server_address = document.querySelectorAll('input[name="input1"]')[0].value
-    @port = document.querySelectorAll('input[name="input2"]')[0].value
+    @server_address = document.querySelectorAll('input[name="input1"]')[0].value.toString()
+    @port = parseInt(document.querySelectorAll('input[name="input2"]')[0].value, 10)
     @grid = []
 
     for row in [0...@numberOfRows]
@@ -108,4 +100,16 @@ class Client
     @drawingContext.fillStyle = fillStyle
     @drawingContext.fillRect x, y, @cellSize, @cellSize
 
-window.Client = Client
+main = ->
+  chrome.app.runtime.onLaunched.addListener ->
+    chrome.app.window.create "../index.html",
+      bounds:
+        width: 400
+        height: 500
+
+client_spawner = ->
+  new Client
+
+document.addEventListener "DOMContentLoaded", ->
+  main()
+  document.querySelector("input[name=\"button\"]").addEventListener "click", client_spawner

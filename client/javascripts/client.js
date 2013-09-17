@@ -1,10 +1,12 @@
 (function() {
-  var Client,
+  var Client, client_spawner, main,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Client = (function() {
 
-    Client.prototype.server_address = null;
+    Client.prototype.socket_info = null;
+
+    Client.prototype.server_address = "test";
 
     Client.prototype.port = null;
 
@@ -22,11 +24,8 @@
 
     Client.prototype.drawingCanvas = null;
 
-    function Client(server_address, port) {
-      this.server_address = server_address;
-      this.port = port;
-      this.update = __bind(this.update, this);
-      this.removeForm();
+    function Client() {
+      this.update = __bind(this.update, this);      this.removeForm();
       this.createCanvas();
       this.resizeCanvas();
       this.createDrawingContext();
@@ -53,36 +52,34 @@
       return document.getElementById("server_info").style.display = "none";
     };
 
-    /*
-      #Join the server
-      joinServer: ->
-        dgram   = require 'dgram'
-        client  = dgram.createSocket 'udp4'
-    
-        stdin = process.openStdin();
-        stdin.setEncoding 'utf8'
-    
-        message = new Buffer "HELLO";
-        client.send message, 0, message.length, parseInt(@port, 10), @server_address;
-        console.log "This should go to logs."
-        console.log message
-        client.on 'message', (message) ->
-          m = message.toString()
-          r = m.match(/\d+/g)
-          process.stdout.write m
-          if (r isnt null)
-            process.stdout.write r[0]
-            process.stdout.write r[1]
-            process.stdout.write r[2]
-            process.stdout.write r[3]
-            process.stdout.write r[4]
-            process.stdout.write "\n"
-    */
+    Client.prototype.joinServer = function() {
+      var socket,
+        _this = this;
+      socket = chrome.socket;
+      return socket.create('udp', {}, function(socketInfo) {
+        _this.socket_info = socketInfo;
+        return socket.connect(_this.socket_info.socketId, _this.server_address, _this.port, function(connectResult) {
+          var str2ab;
+          str2ab = function(str) {
+            var buf, bufView, i, _ref;
+            buf = new ArrayBuffer(str.length);
+            bufView = new Uint8Array(buf);
+            for (i = 0, _ref = str.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
+              bufView[i] = str.charCodeAt(i);
+            }
+            return buf;
+          };
+          return socket.write(_this.socket_info.socketId, str2ab("HELLO\n"), function(writeInfo) {
+            return console.debug("writeinfo", writeInfo);
+          });
+        });
+      });
+    };
 
     Client.prototype.initialize = function() {
       var column, row, _ref, _results;
-      this.server_address = document.querySelectorAll('input[name="input1"]')[0].value;
-      this.port = document.querySelectorAll('input[name="input2"]')[0].value;
+      this.server_address = document.querySelectorAll('input[name="input1"]')[0].value.toString();
+      this.port = parseInt(document.querySelectorAll('input[name="input2"]')[0].value, 10);
       this.grid = [];
       _results = [];
       for (row = 0, _ref = this.numberOfRows; 0 <= _ref ? row < _ref : row > _ref; 0 <= _ref ? row++ : row--) {
@@ -146,6 +143,24 @@
 
   })();
 
-  window.Client = Client;
+  main = function() {
+    return chrome.app.runtime.onLaunched.addListener(function() {
+      return chrome.app.window.create("../index.html", {
+        bounds: {
+          width: 400,
+          height: 500
+        }
+      });
+    });
+  };
+
+  client_spawner = function() {
+    return new Client;
+  };
+
+  document.addEventListener("DOMContentLoaded", function() {
+    main();
+    return document.querySelector("input[name=\"button\"]").addEventListener("click", client_spawner);
+  });
 
 }).call(this);
