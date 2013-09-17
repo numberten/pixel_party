@@ -159,8 +159,9 @@
   };
 
   document.addEventListener("DOMContentLoaded", function() {
+    var _ref;
     main();
-    return document.querySelector("input[name=\"button\"]").addEventListener("click", client_spawner);
+    return (_ref = document.querySelector("input[name=\"button\"]")) != null ? _ref.addEventListener("click", client_spawner) : void 0;
   });
 
 }).call(this);

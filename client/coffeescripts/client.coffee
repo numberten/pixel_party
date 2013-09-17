@@ -112,4 +112,4 @@ client_spawner = ->
 
 document.addEventListener "DOMContentLoaded", ->
   main()
-  document.querySelector("input[name=\"button\"]").addEventListener "click", client_spawner
+  document.querySelector("input[name=\"button\"]")?.addEventListener "click", client_spawner
