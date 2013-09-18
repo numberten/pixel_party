@@ -73,7 +73,13 @@ class Client
 
   #Update function
   update: =>
-    #{TODO} Read packets from server.
+    if @socket_info is null then console.debug "NULL" else
+      chrome.socket.read @socket_info.socketId, (readInfo) ->
+        console.debug "Reading..."
+        if readInfo.resultCode > 0
+          ab2str = (ab) ->
+            String.fromCharCode.apply null, new Uint8Array(ab)
+          console.debug ab2str(readInfo.data)
     @drawGrid()
 
     setTimeout @update, @updateLength

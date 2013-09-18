@@ -105,6 +105,20 @@
     };
 
     Client.prototype.update = function() {
+      if (this.socket_info === null) {
+        console.debug("NULL");
+      } else {
+        chrome.socket.read(this.socket_info.socketId, function(readInfo) {
+          var ab2str;
+          console.debug("Reading...");
+          if (readInfo.resultCode > 0) {
+            ab2str = function(ab) {
+              return String.fromCharCode.apply(null, new Uint8Array(ab));
+            };
+            return console.debug(ab2str(readInfo.data));
+          }
+        });
+      }
       this.drawGrid();
       return setTimeout(this.update, this.updateLength);
     };
