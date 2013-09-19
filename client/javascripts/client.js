@@ -105,9 +105,7 @@
     };
 
     Client.prototype.update = function() {
-      if (this.socket_info === null) {
-        console.debug("NULL");
-      } else {
+      if (this.socket_info != null) {
         chrome.socket.read(this.socket_info.socketId, function(readInfo) {
           var ab2str;
           console.debug("Reading...");

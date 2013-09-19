@@ -73,7 +73,7 @@ class Client
 
   #Update function
   update: =>
-    if @socket_info is null then console.debug "NULL" else
+    if @socket_info?
       chrome.socket.read @socket_info.socketId, (readInfo) ->
         console.debug "Reading..."
         if readInfo.resultCode > 0
