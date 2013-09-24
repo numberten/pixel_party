@@ -199,7 +199,7 @@
                 }
                 return _results3;
               }).call(this);
-              if (deepEquals([row, column], [m[1], m[2]])) {
+              if (deepEquals([row, column], [m[2], m[1]])) {
                 console.log("Equality 4 all!");
                 _results2.push(this.grid[row][column].occupancy.push({
                   red: m[3],
@@ -247,7 +247,6 @@
           _ref3 = [r + p.red, g + p.green, b + p.blue], r = _ref3[0], g = _ref3[1], b = _ref3[2];
         }
         _ref4 = [r / cell.occupancy.length, g / cell.occupancy.length, b / cell.occupancy.length], r = _ref4[0], g = _ref4[1], b = _ref4[2];
-        console.log("RED:" + r + ",GREEN:" + g + ",BLUE:" + b);
         fillStyle = "rgb(" + r + ", " + g + ", " + b + ")";
         console.log(fillStyle);
       }

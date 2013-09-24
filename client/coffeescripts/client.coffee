@@ -121,7 +121,7 @@ class Client
 
           @grid[row][column].occupancy = (p for p in @grid[row][column].occupancy when not deepEquals([p.red, p.green, p.blue], [m[3], m[4], m[5]]))
           #console.log "row: #{row} column: #{column} m[1]: #{m[1]} m[2]: #{m[2]}"
-          if deepEquals([row, column], [m[1], m[2]])
+          if deepEquals([row, column], [m[2], m[1]])
             console.log "Equality 4 all!"
             @grid[row][column].occupancy.push {red: m[3], green: m[4], blue: m[5]}
 
