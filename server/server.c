@@ -1,5 +1,4 @@
 #include "colors.h"
-#include "linked_list.h"
 #include "messaging.h"
 #include "message-processing.h"
 #include <pthread.h> //compile with -lpthread
