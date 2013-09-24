@@ -1,5 +1,7 @@
 #include "timeout.h"
+#include "reply-processing.h"
 #include <stdio.h>
+#include <string.h>
 
 /* Functions for dealing with timeouts. 
  * Used in main()'s timeout pthread.
@@ -9,8 +11,9 @@
 void check_timeouts(list **original_players, list *players) {
   time_t current_time;
   double delta;
-  list *next_ptr;
+  list *next_ptr, *p;
   int timeout = 20; //Maximum time allowed in seconds for a client to go unresponsive.
+  char reply_buffer[50];
 
   if (players == NULL)
     return;
@@ -20,7 +23,15 @@ void check_timeouts(list **original_players, list *players) {
   printf("Time since last PONG by client: %.2f\n", delta);
   if (delta > timeout) {
     printf("deleting player from list, timed out\n");
+    removal_message(players->player, reply_buffer);
     delete_list(original_players, players->player);
+
+    p = *original_players;
+    //sendto the removal message to all still connected clients.
+    while (p != NULL) {
+      sendto(*p->player->socket, reply_buffer, strlen(reply_buffer), 0, (struct sockaddr *) p->player->clientaddr, sizeof(*p->player->clientaddr));
+      p = p->next;
+    }
   }
   check_timeouts(original_players, next_ptr);
 }

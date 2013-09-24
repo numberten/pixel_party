@@ -32,6 +32,19 @@ void pong_message(char *str_ptr) {
   snprintf(str_ptr, 40, "PONG ACK\n");
 }
 
+void removal_message(player_struct *player, char *str_ptr) {
+  unsigned short x, y, r, g, b;
+
+  x = *player->pixel->x;
+  y = *player->pixel->y;
+  r = *player->pixel->red;
+  g = *player->pixel->green;
+  b = *player->pixel->blue;
+
+  snprintf(str_ptr, 40, "REMOVING: x:%hu,y:%hu,r:%hu,g:%hu,b:%hu\n", x, y, r, g, b);
+  return ;
+}
+
 void welcome_message(player_struct *player, char *str_ptr) {
   unsigned short x, y, r, g, b;
 

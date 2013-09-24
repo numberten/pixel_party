@@ -4,5 +4,6 @@
 void error_message(char*);
 void move_message(char, char*);
 void pong_message(char*);
+void removal_message(player_struct*, char*);
 void welcome_message(player_struct*, char*);
 
