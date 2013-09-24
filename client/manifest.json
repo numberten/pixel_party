@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Pixel Party Client",
+  "description": "Chrome client for the hit game Pixel Party.",
+  "version": "0.1",
+  "minimum_chrome_version": "24",
+  "app": {
+    "background": {
+      "scripts": ["javascripts/client.js"]
+    }
+  },
+  "permissions": [
+      {"socket": [
+        "udp-send-to",
+        "udp-bind"
+      ]}
+  ]
+}
+
