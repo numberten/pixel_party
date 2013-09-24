@@ -14,6 +14,7 @@ class Client
   #Constructor
   constructor: ->
     @removeForm()
+    @initializeKeyBindings()
 
     @createCanvas()
     @resizeCanvas()
@@ -38,6 +39,20 @@ class Client
   #Hide 'server_info' form
   removeForm: ->
     document.getElementById("server_info").style.display="none"
+
+  initializeKeyBindings: ->
+    document.body.onkeydown = (event) =>
+      event = event or window.event;
+      keycode = event.charCode or event.keyCode;
+      switch keycode
+        when 37 then @move 'W'
+        when 38 then @move 'N'
+        when 39 then @move 'E'
+        when 40 then @move 'S'
+
+  move: (direction) ->
+    chrome.socket.write @socket_info.socketId, @str2ab("MOVE#{direction}\n"), (writeInfo) ->
+        console.debug "writeinfo", writeInfo
 
   joinServer: =>
     socket = chrome.socket

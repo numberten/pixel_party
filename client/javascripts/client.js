@@ -37,6 +37,7 @@
       this.update = __bind(this.update, this);
       this.addPixel = __bind(this.addPixel, this);
       this.joinServer = __bind(this.joinServer, this);      this.removeForm();
+      this.initializeKeyBindings();
       this.createCanvas();
       this.resizeCanvas();
       this.createDrawingContext();
@@ -61,6 +62,31 @@
 
     Client.prototype.removeForm = function() {
       return document.getElementById("server_info").style.display = "none";
+    };
+
+    Client.prototype.initializeKeyBindings = function() {
+      var _this = this;
+      return document.body.onkeydown = function(event) {
+        var keycode;
+        event = event || window.event;
+        keycode = event.charCode || event.keyCode;
+        switch (keycode) {
+          case 37:
+            return _this.move('W');
+          case 38:
+            return _this.move('N');
+          case 39:
+            return _this.move('E');
+          case 40:
+            return _this.move('S');
+        }
+      };
+    };
+
+    Client.prototype.move = function(direction) {
+      return chrome.socket.write(this.socket_info.socketId, this.str2ab("MOVE" + direction + "\n"), function(writeInfo) {
+        return console.debug("writeinfo", writeInfo);
+      });
     };
 
     Client.prototype.joinServer = function() {
