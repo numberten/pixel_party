@@ -2,7 +2,7 @@
 #include "linked_list.h"
 #include "messaging.h"
 #include "message-processing.h"
-#include <pthread.h>
+#include <pthread.h> //compile with -lpthread
 #include "server.h"
 #include <stdio.h>
 #include <stdlib.h>
