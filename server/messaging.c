@@ -30,7 +30,7 @@ void grid_message(list *players) {
     r = *p->player->pixel->red;
     g = *p->player->pixel->green;
     b = *p->player->pixel->blue;
-    snprintf(str_ptr, 40, "%hu,%hu,%hu,%hu,%hu$\n", x, y, r, g, b);
+    snprintf(str_ptr, 40, "#%hu,%hu,%hu,%hu,%hu$\n", x, y, r, g, b);
     strcat(temp, str_ptr);
     p = p->next;
   }

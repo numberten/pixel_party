@@ -142,7 +142,15 @@
     };
 
     Client.prototype.react = function(str) {
-      var column, deepEquals, m, p, row, _ref, _results;
+      var column, deepEquals, m, p, pattern, row, _results;
+      deepEquals = function(list1, list2) {
+        var i, _ref;
+        if (list1.length !== list2.length) return false;
+        for (i = 0, _ref = list1.length; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
+          if (list1[i] !== list2[i]) return false;
+        }
+        return true;
+      };
       console.debug(str);
       if (str.match(/^PING/)) {
         console.debug("CAUGHT PING");
@@ -164,51 +172,70 @@
           blue: m[5]
         };
       }
-      m = /(\d+),(\d+),(\d+),(\d+),(\d+)\$/.exec(str);
+      m = /^REMOVING: x:(\d+),y:(\d+),r:(\d+),g:(\d+),b:(\d+)/.exec(str);
       if (m != null) {
-        console.debug("m:", m);
-        console.debug("CAUGHT pixeldata$");
-        console.debug("m[1]: " + m[1] + " m[2]: " + m[2]);
+        console.debug("CAUGHT REMOVAL");
         m = m.map(function(i) {
           return parseInt(i, 10);
         });
-        console.debug("m[1]: " + m[1] + " m[2]: " + m[2]);
+        this.grid[m[2]][m[1]].occupancy = (function() {
+          var _i, _len, _ref, _results;
+          _ref = this.grid[m[2]][m[1]].occupancy;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            p = _ref[_i];
+            if (!deepEquals([p.red, p.green, p.blue], [m[3], m[4], m[5]])) {
+              _results.push(p);
+            }
+          }
+          return _results;
+        }).call(this);
+        return;
+      }
+      pattern = /\#(\d+),(\d+),(\d+),(\d+),(\d+)\$/g;
+      if (str.match(pattern)) {
         _results = [];
-        for (row = 0, _ref = this.numberOfRows; 0 <= _ref ? row < _ref : row > _ref; 0 <= _ref ? row++ : row--) {
+        while ((m = pattern.exec(str))) {
+          console.debug("Looping!");
+          console.debug("m:", m);
+          console.debug("CAUGHT pixeldata$");
+          console.debug("m[1]: " + m[1] + " m[2]: " + m[2]);
+          m = m.map(function(i) {
+            return parseInt(i, 10);
+          });
           _results.push((function() {
-            var _ref2, _results2;
+            var _ref, _results2;
             _results2 = [];
-            for (column = 0, _ref2 = this.numberOfColumns; 0 <= _ref2 ? column < _ref2 : column > _ref2; 0 <= _ref2 ? column++ : column--) {
-              deepEquals = function(list1, list2) {
-                var i, _ref3;
-                if (list1.length !== list2.length) return false;
-                for (i = 0, _ref3 = list1.length; 0 <= _ref3 ? i < _ref3 : i > _ref3; 0 <= _ref3 ? i++ : i--) {
-                  if (list1[i] !== list2[i]) return false;
-                }
-                return true;
-              };
-              this.grid[row][column].occupancy = (function() {
-                var _i, _len, _ref3, _results3;
-                _ref3 = this.grid[row][column].occupancy;
+            for (row = 0, _ref = this.numberOfRows; 0 <= _ref ? row < _ref : row > _ref; 0 <= _ref ? row++ : row--) {
+              _results2.push((function() {
+                var _ref2, _results3;
                 _results3 = [];
-                for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-                  p = _ref3[_i];
-                  if (!deepEquals([p.red, p.green, p.blue], [m[3], m[4], m[5]])) {
-                    _results3.push(p);
+                for (column = 0, _ref2 = this.numberOfColumns; 0 <= _ref2 ? column < _ref2 : column > _ref2; 0 <= _ref2 ? column++ : column--) {
+                  this.grid[row][column].occupancy = (function() {
+                    var _i, _len, _ref3, _results4;
+                    _ref3 = this.grid[row][column].occupancy;
+                    _results4 = [];
+                    for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+                      p = _ref3[_i];
+                      if (!deepEquals([p.red, p.green, p.blue], [m[3], m[4], m[5]])) {
+                        _results4.push(p);
+                      }
+                    }
+                    return _results4;
+                  }).call(this);
+                  if (deepEquals([row, column], [m[2], m[1]])) {
+                    console.log("Equality 4 all!");
+                    _results3.push(this.grid[row][column].occupancy.push({
+                      red: m[3],
+                      green: m[4],
+                      blue: m[5]
+                    }));
+                  } else {
+                    _results3.push(void 0);
                   }
                 }
                 return _results3;
-              }).call(this);
-              if (deepEquals([row, column], [m[2], m[1]])) {
-                console.log("Equality 4 all!");
-                _results2.push(this.grid[row][column].occupancy.push({
-                  red: m[3],
-                  green: m[4],
-                  blue: m[5]
-                }));
-              } else {
-                _results2.push(void 0);
-              }
+              }).call(this));
             }
             return _results2;
           }).call(this));
