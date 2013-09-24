@@ -152,12 +152,11 @@ class Client
       fillStyle = 'rgb(38, 38, 38)'
     else
       #Fill the cell with the average rgb of all pixels in its occupancy list.
-      [r,g,b] = [0,0,0]
-      [r,g,b] = [r+p.red, g+p.green, b+p.blue] for p in cell.occupancy
-      [r,g,b] = [r/cell.occupancy.length, g/cell.occupancy.length, b/cell.occupancy.length]
+      sumrgb = cell.occupancy.reduce (p, acc) ->
+        {red: p.red + acc.red, green: p.green + acc.green, blue: p.blue + acc.blue}
+      [r,g,b] = (Math.round p/cell.occupancy.length for p in [sumrgb.red, sumrgb.green, sumrgb.blue])
 
       fillStyle = "rgb(#{r}, #{g}, #{b})"
-      console.log fillStyle
     
     @drawingContext.strokeStyle = 'rgba(242, 198, 65, 0.1)'
     @drawingContext.strokeRect x, y, @cellSize, @cellSize

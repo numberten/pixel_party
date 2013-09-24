@@ -261,21 +261,30 @@
     };
 
     Client.prototype.drawCell = function(cell) {
-      var b, fillStyle, g, p, r, x, y, _i, _len, _ref, _ref2, _ref3, _ref4;
+      var b, fillStyle, g, p, r, sumrgb, x, y, _ref;
       x = cell.column * this.cellSize;
       y = cell.row * this.cellSize;
       if (cell.occupancy.length === 0) {
         fillStyle = 'rgb(38, 38, 38)';
       } else {
-        _ref = [0, 0, 0], r = _ref[0], g = _ref[1], b = _ref[2];
-        _ref2 = cell.occupancy;
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          p = _ref2[_i];
-          _ref3 = [r + p.red, g + p.green, b + p.blue], r = _ref3[0], g = _ref3[1], b = _ref3[2];
-        }
-        _ref4 = [r / cell.occupancy.length, g / cell.occupancy.length, b / cell.occupancy.length], r = _ref4[0], g = _ref4[1], b = _ref4[2];
+        sumrgb = cell.occupancy.reduce(function(p, acc) {
+          return {
+            red: p.red + acc.red,
+            green: p.green + acc.green,
+            blue: p.blue + acc.blue
+          };
+        });
+        _ref = (function() {
+          var _i, _len, _ref, _results;
+          _ref = [sumrgb.red, sumrgb.green, sumrgb.blue];
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            p = _ref[_i];
+            _results.push(Math.round(p / cell.occupancy.length));
+          }
+          return _results;
+        })(), r = _ref[0], g = _ref[1], b = _ref[2];
         fillStyle = "rgb(" + r + ", " + g + ", " + b + ")";
-        console.log(fillStyle);
       }
       this.drawingContext.strokeStyle = 'rgba(242, 198, 65, 0.1)';
       this.drawingContext.strokeRect(x, y, this.cellSize, this.cellSize);
