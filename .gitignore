@@ -1,3 +1,5 @@
 *.swp
 */client
 */server
+*.o
+client/alpha_clients
